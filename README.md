@@ -1,2 +1,2 @@
 # balls
-Programa de simulación de bolas que rebotan en funciones matemáticas
+Programa que cálcula bolas rebotando en la función  x^4 - x^2 con la intención de hacer un fractal

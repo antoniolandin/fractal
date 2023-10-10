@@ -5,6 +5,7 @@ from PIL import Image
 import multiprocessing as mpp
 from multiprocessing import Pool
 import tqdm
+import gc
 
 def f(x):
      return x**4 - 3*x**2 
@@ -33,17 +34,20 @@ MAX_X = -0.5
 MIN_Y = 1.5
 MAX_Y = 0.5
 
-RESOLUCION = 100
+LARGO_PANTALLA = 1000
+ALTO_PANTALLA = 2000
 
 def numero_botes(x_0, y_0):
      distancia_caida = y_0 - f(x_0)
 
+     y_i = f(x_0)
+     
+     if(y_0 < y_i):
+          return 0
+     
      v = np.sqrt(2*G*distancia_caida)
-
-     plt.plot(x_0, y_0, 'ro')
-     plt.plot(x_0, f(x_0), 'ro')
-
-     y_0 = f(x_0)
+     
+     y_0 = y_i
 
      numero_botes = 0
 
@@ -97,34 +101,68 @@ def numero_botes(x_0, y_0):
           
           numero_botes += 1
           
+     # limpiar memoria
+     try:
+          del trayectoria, resta, r, x_i, y_i, x_0, y_0, v, distancia_caida, velocidad_ganada, m, c
+     except:
+          pass     
+     
      return numero_botes
 
-X = np.linspace(-1.5, -0.5, RESOLUCION)
-Y = np.linspace(0.5, 1.5, RESOLUCION)
+X = np.linspace(-1.95, 1.95, LARGO_PANTALLA)
+Y = np.linspace(-2.5, 4, ALTO_PANTALLA)
 
-pixeles = np.zeros((RESOLUCION, RESOLUCION, 3), dtype=np.uint8)
+colores = []
 
-def procesar(x, y):
+STEP = 32
+
+for r in range(0, 256, STEP):
+     for g in range(0, 256, STEP):
+          for b in range(0, 256, STEP):
+               colores.append((r,g,b))
+                          
+def map_to_color(numero):
+     if( numero == 0):
+          return (255, 255, 255)
+     if(numero > len(colores)):
+          return (0,0,0)
+     else:
+          return colores[numero]
+
+
+def procesar(pos):
+     
+     if(pos[0] % 10 == 0 and pos[1] % 10 == 0):
+          gc.collect()
+     
+     x = pos[0]
+     y = pos[1]
+     
      n_botes = numero_botes(X[x], Y[y])
-     return color(n_botes)
+     return map_to_color(n_botes)
 
 if __name__ == '__main__':
      
-     pixeles = np.zeros((RESOLUCION, RESOLUCION, 3), dtype=np.uint8)
+     pixeles = np.zeros((ALTO_PANTALLA, LARGO_PANTALLA, 3), dtype=np.uint8)
      
      fila = 0
      columna = 0
      
-     with Pool(mpp.cpu_count()) as pool:
-        iterable =  [(x,y) for x in range(RESOLUCION) for y in range(RESOLUCION)]
-        for pixel in tqdm.tqdm(pool.istarmap(procesar, iterable),
+     
+     iterable =  [(x,y) for x in range(LARGO_PANTALLA) for y in range(ALTO_PANTALLA)]
+     
+     with Pool(mpp.cpu_count() - 1) as pool:
+          for pixel in tqdm.tqdm(pool.imap(procesar, iterable),
                            total=len(iterable)):
-          pixeles[fila][columna] = pixel
+               pixeles[columna][fila] = pixel
             
-          columna += 1
-          if columna == RESOLUCION :
-               columna = 0
-               fila += 1
+               columna += 1
+               if columna == ALTO_PANTALLA:
+                    columna = 0
+                    fila += 1
+          
+          pool.close()
+          pool.join()
      
      new_image = Image.fromarray(pixeles)
      new_image.save('new.png')

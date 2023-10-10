@@ -1,25 +1,16 @@
+import istarmap
 import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
+import multiprocessing as mpp
+from multiprocessing import Pool
+import tqdm
 
 def f(x):
      return x**4 - 3*x**2 
  
 def derivada(x):
      return 4*x**3 - 6*x
- 
-def PolyCoefficients(x, coeffs):
-    """ Returns a polynomial for ``x`` values for the ``coeffs`` provided.
-
-    The coefficients must be in ascending order (``x**0`` to ``x**o``).
-    """
-    o = len(coeffs)
-    print(f'# This is a polynomial of order {o}.')
-    y = 0
-    for i in range(o):
-        y += coeffs[i]*x**i
-    return y
-
 
 def color(numero):
      if numero >= 0 and numero < 40:
@@ -35,14 +26,19 @@ def color(numero):
 funcion = [1, 0, -3, 0, 0]
 G = 9.81
 
+# Configuracion
+MIN_X = -1.5
+MAX_X = -0.5
+
+MIN_Y = 1.5
+MAX_Y = 0.5
+
+RESOLUCION = 100
 
 def numero_botes(x_0, y_0):
      distancia_caida = y_0 - f(x_0)
 
-
      v = np.sqrt(2*G*distancia_caida)
-     inter = [x_0, f(x_0)]
-     x = np.linspace(-2, 2, 100)
 
      plt.plot(x_0, y_0, 'ro')
      plt.plot(x_0, f(x_0), 'ro')
@@ -103,30 +99,33 @@ def numero_botes(x_0, y_0):
           
      return numero_botes
 
-MIN_X = -1.5
-MAX_X = -0.5
-
-MIN_Y = 1.5
-MAX_Y = 0.5
-
-RESOLUCION = 1000
-
 X = np.linspace(-1.5, -0.5, RESOLUCION)
 Y = np.linspace(0.5, 1.5, RESOLUCION)
 
 pixeles = np.zeros((RESOLUCION, RESOLUCION, 3), dtype=np.uint8)
 
-mayor = numero_botes(X[0], Y[0])
+def procesar(x, y):
+     n_botes = numero_botes(X[x], Y[y])
+     return color(n_botes)
 
-for i in range(RESOLUCION):
-     for j in range(RESOLUCION):
-          n_botes = numero_botes(X[i], Y[j])
-          pixeles[i][j] = color(n_botes)
-          if n_botes > mayor:
-               mayor = n_botes
-          print("Progreso en porcentaje: ", round((i*RESOLUCION + j) / (RESOLUCION**2) * 100, 2), "%")
-
-print("Mayor numero de botes: ", mayor)
-
-new_image = Image.fromarray(pixeles)
-new_image.save('new.png')
+if __name__ == '__main__':
+     
+     pixeles = np.zeros((RESOLUCION, RESOLUCION, 3), dtype=np.uint8)
+     
+     fila = 0
+     columna = 0
+     
+     with Pool(mpp.cpu_count()) as pool:
+        iterable =  [(x,y) for x in range(RESOLUCION) for y in range(RESOLUCION)]
+        for pixel in tqdm.tqdm(pool.istarmap(procesar, iterable),
+                           total=len(iterable)):
+          pixeles[fila][columna] = pixel
+            
+          columna += 1
+          if columna == RESOLUCION :
+               columna = 0
+               fila += 1
+     
+     new_image = Image.fromarray(pixeles)
+     new_image.save('new.png')
+     

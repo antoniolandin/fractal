@@ -34,8 +34,8 @@ MAX_X = -0.5
 MIN_Y = 1.5
 MAX_Y = 0.5
 
-LARGO_PANTALLA = 1000
-ALTO_PANTALLA = 2000
+LARGO_PANTALLA = 100
+ALTO_PANTALLA = 200
 
 def numero_botes(x_0, y_0):
      distancia_caida = y_0 - f(x_0)
@@ -50,8 +50,15 @@ def numero_botes(x_0, y_0):
      y_0 = y_i
 
      numero_botes = 0
+     
+     derecha = True
+     
+     if(x_0 < 0):
+          derecha = False
+     else:
+          derecha = True
 
-     while(x_0 < 0 and numero_botes < 1000):
+     while( ((x_0 < 0 and derecha == False) or (x_0 > 0 and derecha == True)) and numero_botes < 1000):
           m = -derivada(x_0)
           c = G*(m**2 + 1) / (2*v**2)
 
@@ -132,7 +139,7 @@ def map_to_color(numero):
 
 def procesar(pos):
      
-     if(pos[0] % 10 == 0 and pos[1] % 10 == 0):
+     if(pos[0] % 100 == 0 and pos[1] % 100 == 0):
           gc.collect()
      
      x = pos[0]
@@ -149,15 +156,16 @@ if __name__ == '__main__':
      columna = 0
      
      
-     iterable =  [(x,y) for x in range(LARGO_PANTALLA) for y in range(ALTO_PANTALLA)]
+     iterable =  [(x,y) for y in range(ALTO_PANTALLA - 1, -1, -1) for x in range(0, LARGO_PANTALLA, 1)]
      
      with Pool(mpp.cpu_count() - 1) as pool:
           for pixel in tqdm.tqdm(pool.imap(procesar, iterable),
                            total=len(iterable)):
-               pixeles[columna][fila] = pixel
+               
+               pixeles[fila][columna] = pixel
             
                columna += 1
-               if columna == ALTO_PANTALLA:
+               if columna == LARGO_PANTALLA:
                     columna = 0
                     fila += 1
           

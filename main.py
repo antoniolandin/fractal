@@ -1,4 +1,3 @@
-import istarmap
 import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
@@ -28,14 +27,17 @@ funcion = [1, 0, -3, 0, 0]
 G = 9.81
 
 # Configuracion
-MIN_X = -1.5
-MAX_X = -0.5
+MIN_X = -1.95
+MAX_X = 1.95
 
-MIN_Y = 1.5
-MAX_Y = 0.5
+MIN_Y = -2.5
+MAX_Y = 4
 
 LARGO_PANTALLA = 100
 ALTO_PANTALLA = 200
+
+X = np.linspace(MIN_X, MAX_X, LARGO_PANTALLA)
+Y = np.linspace(MIN_Y, MAX_Y, ALTO_PANTALLA)
 
 def numero_botes(x_0, y_0):
      distancia_caida = y_0 - f(x_0)
@@ -116,9 +118,6 @@ def numero_botes(x_0, y_0):
      
      return numero_botes
 
-X = np.linspace(-1.95, 1.95, LARGO_PANTALLA)
-Y = np.linspace(-2.5, 4, ALTO_PANTALLA)
-
 colores = []
 
 STEP = 32
@@ -139,6 +138,7 @@ def map_to_color(numero):
 
 def procesar(pos):
      
+     # limpiar memoria cada 100 iteraciones
      if(pos[0] % 100 == 0 and pos[1] % 100 == 0):
           gc.collect()
      

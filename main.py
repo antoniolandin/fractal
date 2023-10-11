@@ -33,13 +33,16 @@ MAX_X = 1.95
 MIN_Y = -2.5
 MAX_Y = 4
 
-LARGO_PANTALLA = 10
-ALTO_PANTALLA = 20
+LARGO_PANTALLA = 1000
+ALTO_PANTALLA = 2000
 
 X = np.linspace(MIN_X, MAX_X, LARGO_PANTALLA)
 Y = np.linspace(MIN_Y, MAX_Y, ALTO_PANTALLA)
 
 def numero_botes(x_0, y_0):
+
+     x = x_0
+     y = y_0
 
      # Calculamos la primera intersección con la curva (intersección con una recta vertical)
      y_i = f(x_0)
@@ -54,7 +57,7 @@ def numero_botes(x_0, y_0):
      # Calculamos la velocidad inicial de la pelota
      v = np.sqrt(2*G*distancia_caida) 
      
-     y_0 = y_i
+     y = y_i
 
      numero_botes = 0
      
@@ -65,11 +68,11 @@ def numero_botes(x_0, y_0):
      else:
           derecha = True
 
-     while( ((x_0 < 0 and derecha == False) or (x_0 > 0 and derecha == True)) and numero_botes < 1000):
-          m = -derivada(x_0)
+     while( ((x < 0 and derecha == False) or (x > 0 and derecha == True)) and numero_botes < 1000):
+          m = -derivada(x)
           c = G*(m**2 + 1) / (2*v**2)
 
-          trayectoria = [0, 0, -c, m + 2*x_0*c, -m*x_0 -c*x_0**2 + y_0]
+          trayectoria = [0, 0, -c, m + 2*x*c, -m*x -c*x**2 + y]
 
           resta = np.subtract(trayectoria, funcion)
 
@@ -85,7 +88,7 @@ def numero_botes(x_0, y_0):
                
                for raiz in r: 
                     raiz_final = round(raiz, 7)
-                    if(raiz_final != round(x_0,7)):
+                    if(raiz_final != round(x,7)):
                          if(raiz_final < menor):
                               menor = round(raiz, 7)
                x_i = menor
@@ -94,7 +97,7 @@ def numero_botes(x_0, y_0):
                
                for raiz in r: 
                     raiz_final = round(raiz, 7)
-                    if(raiz_final != round(x_0,7)):
+                    if(raiz_final != round(x,7)):
                          if(raiz_final > mayor):
                               mayor = round(raiz, 7)
                x_i = mayor
@@ -102,7 +105,7 @@ def numero_botes(x_0, y_0):
           y_i = f(x_i)
           
           # Actualizar la velocidad
-          distancia_caida = y_0 - y_i
+          distancia_caida = y - y_i
           
           if(distancia_caida < 0):
                distancia_caida = -distancia_caida
@@ -113,19 +116,18 @@ def numero_botes(x_0, y_0):
           # Actualizar parámetros
           v += velocidad_ganada
           
-          x_0 = x_i
-          y_0 = y_i
+          x = x_i
+          y = y_i
           
           numero_botes += 1
           
      # limpiar memoria
      try:
-          del trayectoria, resta, r, x_i, y_i, x_0, y_0, v, distancia_caida, velocidad_ganada, m, c, mayor, menor, raiz_final
+          del trayectoria, resta, r, x_i, y_i, x_0, y_0, x, y, v, distancia_caida, velocidad_ganada, m, c, mayor, menor, raiz_final
      except:
           pass     
      
      return numero_botes
-
 
 #Generar el colormap de colores
 colores = []

@@ -124,6 +124,7 @@ def mostrar_grafica(x_0, y_0):
     plt.plot(x_0, y_0, 'ro')
     plt.plot(x_0, f(x_0), 'ro')
     poly_plot(funcion, X)
+    plt.axvline(x = x_0)
     
     # Guardar la imagen de la gráfica
     plt.savefig(f"botes en ({x_0},{y_0}).png")

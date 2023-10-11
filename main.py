@@ -33,21 +33,26 @@ MAX_X = 1.95
 MIN_Y = -2.5
 MAX_Y = 4
 
-LARGO_PANTALLA = 100
-ALTO_PANTALLA = 200
+LARGO_PANTALLA = 10
+ALTO_PANTALLA = 20
 
 X = np.linspace(MIN_X, MAX_X, LARGO_PANTALLA)
 Y = np.linspace(MIN_Y, MAX_Y, ALTO_PANTALLA)
 
 def numero_botes(x_0, y_0):
-     distancia_caida = y_0 - f(x_0)
 
+     # Calculamos la primera intersección con la curva (intersección con una recta vertical)
      y_i = f(x_0)
      
+     # Calculamos la distancia que ha caido la pelota
+     distancia_caida = y_0 - y_i
+     
+     # Si no está por encima de la curva no hay botes
      if(y_0 < y_i):
           return 0
      
-     v = np.sqrt(2*G*distancia_caida)
+     # Calculamos la velocidad inicial de la pelota
+     v = np.sqrt(2*G*distancia_caida) 
      
      y_0 = y_i
 
@@ -71,7 +76,10 @@ def numero_botes(x_0, y_0):
           r = np.roots(resta)
           r = r[np.isreal(r)].real # Seleccionar solo las raices reales
           
-          # Seleccionar la raiz correcta (puede haber muchas intersecciobnes en la parábola pero solo una es correcta)
+          # Seleccionar la raiz correcta (puede haber muchas intersecciones en la parábola pero solo una es correcta)
+          mayor = 0
+          menor = 0
+          
           if m > 0:
                menor = 9000
                
@@ -112,12 +120,14 @@ def numero_botes(x_0, y_0):
           
      # limpiar memoria
      try:
-          del trayectoria, resta, r, x_i, y_i, x_0, y_0, v, distancia_caida, velocidad_ganada, m, c
+          del trayectoria, resta, r, x_i, y_i, x_0, y_0, v, distancia_caida, velocidad_ganada, m, c, mayor, menor, raiz_final
      except:
           pass     
      
      return numero_botes
 
+
+#Generar el colormap de colores
 colores = []
 
 STEP = 32
@@ -126,7 +136,8 @@ for r in range(0, 256, STEP):
      for g in range(0, 256, STEP):
           for b in range(0, 256, STEP):
                colores.append((r,g,b))
-                          
+                        
+# Funcion que mapea un numero a un color rgb  
 def map_to_color(numero):
      if( numero == 0):
           return (255, 255, 255)
@@ -137,15 +148,11 @@ def map_to_color(numero):
 
 
 def procesar(pos):
-     
      # limpiar memoria cada 100 iteraciones
      if(pos[0] % 100 == 0 and pos[1] % 100 == 0):
           gc.collect()
      
-     x = pos[0]
-     y = pos[1]
-     
-     n_botes = numero_botes(X[x], Y[y])
+     n_botes = numero_botes(X[pos[0]], Y[pos[1]])
      return map_to_color(n_botes)
 
 if __name__ == '__main__':
@@ -173,5 +180,5 @@ if __name__ == '__main__':
           pool.join()
      
      new_image = Image.fromarray(pixeles)
-     new_image.save('new.png')
+     new_image.save('fractal.png')
      

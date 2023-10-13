@@ -11,6 +11,11 @@
 
 <center><img src="imagenes/imagen completa (1000x2000).png" width="400"/></center>
 
+#### Video de zoom a una de sus elipses
+https://github.com/Pastafarista/balls/assets/104270259/d648392f-142b-48e7-bb36-b7fa68e2c0f3
+
+
+
 ## Inspiración
 <a href="https://www.youtube.com/watch?v=LQmyR-sC6GA>">Balls dropped on a double well curve</a> de <a href="https://www.youtube.com/@AlexanderGustafssonAnimations">Alexander Gustafsson</a><br>
 Comentario de <a href="https://www.youtube.com/channel/UC0Uv9D5C15lCanvxxdo06Ig">Aspwil</a>

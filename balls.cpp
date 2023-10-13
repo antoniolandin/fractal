@@ -11,8 +11,7 @@
 
 # define MAX_BOTES 1000
 
-using namespace std;
-using namespace Eigen;
+using namespace std;using namespace Eigen;
 
 bool double_equals(double a, double b, double epsilon = 0.001)
 {

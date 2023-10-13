@@ -13,8 +13,7 @@
 # define ALTO_PANTALLA 2000
 # define ANCHO_PANTALLA 1000
 
-using namespace std;
-using namespace Eigen;
+using namespace std;using namespace Eigen;
 
 bool double_equals(double a, double b, double epsilon = 0.001)
 {

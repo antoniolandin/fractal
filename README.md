@@ -15,7 +15,7 @@
 https://github.com/Pastafarista/balls/assets/104270259/d648392f-142b-48e7-bb36-b7fa68e2c0f3
 
 #### Zoom más profundo
-https://github.com/Pastafarista/balls/assets/104270259/7e705eff-798a-408b-8c11-f7c8da8ddcfa
+https://github.com/Pastafarista/balls/assets/104270259/841ee25f-5ae5-43e6-9259-f022451654a0
 
 ## Inspiración
 <a href="https://www.youtube.com/watch?v=LQmyR-sC6GA>">Balls dropped on a double well curve</a> de <a href="https://www.youtube.com/@AlexanderGustafssonAnimations">Alexander Gustafsson</a><br>

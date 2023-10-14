@@ -28,35 +28,35 @@ def mpp_to_png(nombre_archivo_imagen):
 
 frame_rate = 15
 
-iteraciones = 15*60*frame_rate
+iteraciones = 1*60*frame_rate
 inicio = 100
 
-centro = (-0.5796783626, 1.023391813)
+centro = (-0.5795386649, 1.023494748)
+carpeta = "render"
 
 # Crear las imagenes
 for i in range(inicio, inicio+iteraciones+1):
     comando = f"balls.exe 720 720 -0.75 1 {i} imagen{i}.ppm"
-    subprocess.run(["balls.exe", "720", "720", f"{centro[0]}", f"{centro[1]}", f"{i}", f"zoom_a_la_elipse/imagen{i}.ppm"])
+    subprocess.run(["./balls.exe", "720", "720", f"{centro[0]}", f"{centro[1]}", f"{i**2}", f"{carpeta}/imagen{i}.ppm"])
 
 # Convertir de ppm a png
-for i in range(1, iteraciones+1):
-    mpp_to_png(f"zoom_a_la_elipse/imagen{i}.ppm")
-    os.remove(f"zoom_a_la_elipse/imagen{i}.ppm")
+for i in range(inicio, iteraciones+1):
+    mpp_to_png(f"{carpeta}/imagen{i}.ppm")
+    os.remove(f"{carpeta}/imagen{i}.ppm")
 
 # Crear el video
-image_folder = 'zoom_a_la_elipse'
 video_name = 'video.avi'
 
-images = [img for img in os.listdir(image_folder) if img.endswith(".png")]
+images = [img for img in os.listdir(carpeta) if img.endswith(".png")]
 
 images.sort(key=lambda x: int(x.split(".")[0][6:]))
-frame = cv2.imread(os.path.join(image_folder, images[0]))
+frame = cv2.imread(os.path.join(carpeta, images[0]))
 height, width, layers = frame.shape
 
 video = cv2.VideoWriter(video_name, 0, frame_rate, (width,height))
 
 for image in images:
-    video.write(cv2.imread(os.path.join(image_folder, image)))
+    video.write(cv2.imread(os.path.join(carpeta, image)))
 
 cv2.destroyAllWindows()
 video.release()

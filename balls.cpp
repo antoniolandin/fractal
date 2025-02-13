@@ -3,11 +3,11 @@
 # include <math.h>
 # include <vector>
 # include <iostream>
-# include "librerias/root_finder.hpp"
-# include "librerias/Eigen/Eigen"
 # include <fstream>
 # include <future>
-# include "librerias/BS_thread_pool_light.hpp"
+# include "lib/root_finder.hpp"
+# include "lib/Eigen/Eigen"
+# include "lib/BS_thread_pool_light.hpp"
 
 # define MAX_BOTES 1000
 

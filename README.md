@@ -27,7 +27,7 @@ https://github.com/Pastafarista/balls/assets/104270259/711ad99a-cd2f-483f-a510-4
 ## Inspiración
 <a href="https://www.youtube.com/watch?v=LQmyR-sC6GA>">Balls dropped on a double well curve</a> de <a href="https://www.youtube.com/@AlexanderGustafssonAnimations">Alexander Gustafsson</a><br>
 Comentario de <a href="https://www.youtube.com/channel/UC0Uv9D5C15lCanvxxdo06Ig">Aspwil</a>
-<center><img src="imagenes/comentario.png"/></center>
+<center><img src="./.assets/comentario.png"/></center>
 
 ## Agradecimientos
 <a href="https://github.com/bshoshany/thread-pool">Librería thread-pool de bshoshany</a><br>

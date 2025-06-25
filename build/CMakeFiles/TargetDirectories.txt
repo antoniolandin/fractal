@@ -1,0 +1,3 @@
+/home/antonio/Repos/fractal/build/CMakeFiles/fractal.dir
+/home/antonio/Repos/fractal/build/CMakeFiles/edit_cache.dir
+/home/antonio/Repos/fractal/build/CMakeFiles/rebuild_cache.dir

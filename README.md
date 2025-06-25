@@ -4,12 +4,12 @@
 ### Cada pelota representa un pixel y el color de pixel va en función del número de botes que tarda en llegar al otro lado de la gráfica
 
 #### Aquí se puede ver la simulación de botes de una bola que tiramos desde (1,1)
-<center><img src="imagenes/botes.png"/></center>
+<center><img src="./.assets/botes.png"/></center>
 <br>
 
 #### Este es el fractal resultante con una calidad de 1000x2000 pixeles
 
-<center><img src="imagenes/imagen completa (1000x2000).png" width="400"/></center>
+<center><img src="./.assets/imgs/imagen-completa-(1000x2000).png" width="400"/></center>
 
 #### Video de zoom a una de sus elipses
 https://github.com/Pastafarista/balls/assets/104270259/d648392f-142b-48e7-bb36-b7fa68e2c0f3

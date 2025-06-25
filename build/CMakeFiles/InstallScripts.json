@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/antonio/Repos/fractal/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

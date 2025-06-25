@@ -1,1 +1,0 @@
-/bin/c++ -Wl,--dependency-file=CMakeFiles/fractal.dir/link.d CMakeFiles/fractal.dir/src/bounce.cpp.o CMakeFiles/fractal.dir/src/main.cpp.o CMakeFiles/fractal.dir/src/utils.cpp.o -o fractal

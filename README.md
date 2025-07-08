@@ -1,4 +1,4 @@
-# Balls
+# Fractal
 
 ## Programa que cálcula bolas rebotando en la función  x^4 - x^2 con la intención de hacer un fractal
 ### Cada pelota representa un pixel y el color de pixel va en función del número de botes que tarda en llegar al otro lado de la gráfica
@@ -22,7 +22,22 @@ https://github.com/Pastafarista/balls/assets/104270259/92a09592-7c99-41a4-8a5b-3
 
 https://github.com/Pastafarista/balls/assets/104270259/711ad99a-cd2f-483f-a510-47543b5a9185
 
+## Dependencias
 
+```bash
+sudo apt update
+sudo apt install \
+    libxrandr-dev \
+    libxcursor-dev \
+    libxi-dev \
+    libudev-dev \
+    libfreetype-dev \
+    libflac-dev \
+    libvorbis-dev \
+    libgl1-mesa-dev \
+    libegl1-mesa-dev \
+    libfreetype-dev
+```
 
 ## Inspiración
 <a href="https://www.youtube.com/watch?v=LQmyR-sC6GA>">Balls dropped on a double well curve</a> de <a href="https://www.youtube.com/@AlexanderGustafssonAnimations">Alexander Gustafsson</a><br>

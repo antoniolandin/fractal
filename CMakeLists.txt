@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.28)
 project(fractal)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -11,15 +11,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_DIR}/bin)
 
-# Descargar SFML
 include(FetchContent)
-FetchContent_Declare(
-    SFML
+FetchContent_Declare(SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
     GIT_TAG 2.6.1
-    GIT_SHALLOW TRUE
-)
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build SFML as static libraries")
+    GIT_SHALLOW ON
+    EXCLUDE_FROM_ALL
+    SYSTEM)
+FetchContent_MakeAvailable(SFML)
 
 # Descargar thread-pool
 FetchContent_Declare(
@@ -64,6 +63,7 @@ add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
 )
 
+
 # Vincular SFML
 target_link_libraries(${PROJECT_NAME} PRIVATE
     sfml-graphics
@@ -71,6 +71,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     sfml-system
     Eigen3::Eigen
 )
+
+# Compilar solo en C++17
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 # Post-build: symlink compile_commands.json
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD

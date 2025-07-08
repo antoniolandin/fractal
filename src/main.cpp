@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
-#include <math.h>
-#include "../lib/BS_thread_pool_light.hpp"
-#include "../include/bounce.h"
-#include "../include/utils.h"
-#include "../include/color.h"
+#include <BS_thread_pool.hpp>
 #include <SFML/Graphics.hpp>
+#include "bounce.h"
+#include "utils.h"
+#include "color.h"
 
 int main(int argc, char const* argv[])
 {
@@ -32,12 +31,19 @@ int main(int argc, char const* argv[])
     std::vector<double> Y = linspace_double(MIN_Y, MAX_Y, ALTO);
 
     // Utilizando multiprocessing, calculamos todos los promesas en un vector
-    BS::thread_pool_light pool;
+    BS::thread_pool pool;
     std::vector<std::future<int>> promesas;
 
     for (auto y = Y.rbegin(); y != Y.rend(); ++y) {
         for (auto x = X.begin(); x != X.end(); ++x) {
-            promesas.push_back(pool.submit(calcular_botes, *x, *y, MAX_BOTES));
+            promesas.push_back(
+                pool.submit_task(
+                    [x, y]
+                    {
+                        return calcular_botes(*x, *y, MAX_BOTES);
+                    }
+                )
+            );
         }
     }
 

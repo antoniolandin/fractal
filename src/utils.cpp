@@ -1,4 +1,4 @@
-#include "../include/utils.h" 
+#include "utils.h" 
 #include <stdexcept>
 
 #define EPSILON 0.001

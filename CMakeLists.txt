@@ -11,7 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_DIR}/bin)
 
-# Download SFML from github
+# Descargar SFML
 include(FetchContent)
 FetchContent_Declare(
     SFML
@@ -19,16 +19,40 @@ FetchContent_Declare(
     GIT_TAG 2.6.1
     GIT_SHALLOW TRUE
 )
-
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build SFML as static libraries")
 
-# Descarga e incluye SFML en la build
-FetchContent_MakeAvailable(sfml)
+# Descargar thread-pool
+FetchContent_Declare(
+    thread-pool
+    GIT_REPOSITORY https://github.com/bshoshany/thread-pool.git
+    GIT_TAG master
+    GIT_SHALLOW TRUE
+)
 
-# Directorios locales
+# Descargar Eigen
+FetchContent_Declare(
+    Eigen
+    GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+    GIT_TAG 3.4.0
+    GIT_SHALLOW TRUE
+)
+
+# Descargar Root-Finder
+FetchContent_Declare(
+    root-finder
+    GIT_REPOSITORY https://github.com/ZhepeiWang/Root-Finder.git
+    GIT_TAG master
+    GIT_SHALLOW TRUE
+)
+# Habilitar todas las descargas
+FetchContent_MakeAvailable(SFML thread-pool Eigen root-finder)
+
+# Directorios locales e includes
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib/Eigen
+    ${Eigen_SOURCE_DIR}
+    ${thread-pool_SOURCE_DIR}/include
+    ${root-finder_SOURCE_DIR}/root_finder/include/root_finder
 )
 
 # Archivos fuente
@@ -40,11 +64,12 @@ add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
 )
 
-# Vincular SFM
-target_link_libraries(${PROJECT_NAME}
+# Vincular SFML
+target_link_libraries(${PROJECT_NAME} PRIVATE
     sfml-graphics
     sfml-window
     sfml-system
+    Eigen3::Eigen
 )
 
 # Post-build: symlink compile_commands.json

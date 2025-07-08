@@ -1,8 +1,8 @@
-#include "../lib/Eigen/Eigen"
-#include "../lib/root_finder.hpp"
+#include <Eigen/Dense>
+#include <root_finder.hpp>
 #include <math.h>
-#include "../include/bounce.h"
-#include "../include/utils.h"
+#include "bounce.h"
+#include "utils.h"
 
 int calcular_botes(double x_0, double y_0, const short unsigned int MAX_BOTES)
 {

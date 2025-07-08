@@ -1,5 +1,5 @@
-#include "../include/color.h"
-#include "math.h"
+#include "color.h"
+#include <math.h>
 
 ColorMap::ColorMap(int step){
     this->len = static_cast<int>(pow(step, 3));

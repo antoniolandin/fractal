@@ -24,5 +24,3 @@ std::vector<double> linspace_double(double start, double end, double num);
  *  @return bool True if the absolute difference between a and b is less than or equal to epsilon, false otherwise.
  */
 bool double_equals(double a, double b);
-
-void map_to_color(int numero, int* map_r, int* map_g, int* map_b, int len, int* r, int* g, int* b);

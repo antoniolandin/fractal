@@ -28,20 +28,3 @@ bool double_equals(double a, double b)
 {
     return std::abs(a - b) < EPSILON;
 }
-
-void map_to_color(int numero, int* map_r, int* map_g, int* map_b, int len, int* r, int* g, int* b)
-{
-    if (numero == -1) {
-        *r = 255;
-        *g = 255;
-        *b = 255;
-    } else if (numero > len) {
-        *r = 0;
-        *g = 0;
-        *b = 0;
-    } else {
-        *r = map_r[numero];
-        *g = map_g[numero];
-        *b = map_b[numero];
-    }
-}

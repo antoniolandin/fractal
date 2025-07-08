@@ -5,6 +5,7 @@
 #include "../lib/BS_thread_pool_light.hpp"
 #include "../include/bounce.h"
 #include "../include/utils.h"
+#include "../include/color.h"
 #include <SFML/Graphics.hpp>
 
 int main(int argc, char const* argv[])
@@ -30,33 +31,10 @@ int main(int argc, char const* argv[])
     std::vector<double> X = linspace_double(MIN_X, MAX_X, ANCHO);
     std::vector<double> Y = linspace_double(MIN_Y, MAX_Y, ALTO);
 
-    // Rellenamos los arrays de mapeo de colores que más tarde nos ayudaran a transformar un número en un color
-    int STEP = 32;
-    int len = (int)pow(STEP, 3);
-    int map_r[(int)pow(STEP, 3)];
-    int map_g[(int)pow(STEP, 3)];
-    int map_b[(int)pow(STEP, 3)];
-
-    int index = 0;
-
-    for (int r = 0; r <= 255; r += STEP) {
-        for (int g = 0; g <= 255; g += STEP) {
-            for (int b = 0; b <= 255; b += STEP) {
-                map_r[index] = r;
-                map_g[index] = g;
-                map_b[index] = b;
-                index++;
-            }
-        }
-    }
 
     // Utilizando multiprocessing, calculamos todos los promesas en un vector
     BS::thread_pool_light pool;
     std::vector<std::future<int>> promesas;
-
-    int head = 5;
-    int cont = 0;
-    int next = 0;
 
     for (auto y = Y.rbegin(); y != Y.rend(); ++y) {
         for (auto x = X.begin(); x != X.end(); ++x) {
@@ -73,9 +51,11 @@ int main(int argc, char const* argv[])
     int pos_y = 0;
     int botes = 0;
 
+    ColorMap color_map = ColorMap(32);
+
     for (auto i = promesas.begin(); i != promesas.end(); ++i) {
         botes = i->get();
-        map_to_color(botes, map_r, map_g, map_b, len, &r, &g, &b);
+        color_map.map(botes, &r, &g, &b);
         image.setPixel(pos_x, pos_y, sf::Color(r, g, b));
 
         pos_x++;

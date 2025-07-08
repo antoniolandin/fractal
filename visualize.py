@@ -1,26 +1,23 @@
 import numpy as np
 from matplotlib import pyplot as plt
+import sympy as sp
+from sympy.utilities.lambdify import lambdify
 
+# Definición simbólica de la curva
+x_sym = sp.symbols("x")
+funcion_sym = x_sym**4 - 3 * x_sym**2  # Función original
+derivada_sym = sp.diff(funcion_sym, x_sym)  # Derivada calculada automáticamente
 
-def f(x):
-    return x**4 - 3 * x**2
+# Convertir a funciones numéricas para evaluación
+f = lambdify(x_sym, funcion_sym, "numpy")
+derivada = lambdify(x_sym, derivada_sym, "numpy")
 
+# Convertir a polinomio y extraer coeficientes
+poly = sp.Poly(funcion_sym, x_sym)
+coeficientes = poly.all_coeffs()
 
-def derivada(x):
-    return 4 * x**3 - 6 * x
-
-
-def PolyCoefficients(x, coeffs):
-    """Returns a polynomial for ``x`` values for the ``coeffs`` provided.
-
-    The coefficients must be in ascending order (``x**0`` to ``x**o``).
-    """
-    o = len(coeffs)
-    print(f"# This is a polynomial of order {o}.")
-    y = 0
-    for i in range(o):
-        y += coeffs[i] * x**i
-    return y
+G = 9.81
+X = np.linspace(-2, 2, 1000)
 
 
 def poly_plot(polinomio, x):
@@ -28,14 +25,7 @@ def poly_plot(polinomio, x):
     plt.plot(x, y)
 
 
-# Constantes
-funcion = [1, 0, -3, 0, 0]
-G = 9.81
-X = np.linspace(-2, 2, 1000)
-
-
 def mostrar_grafica(x_0, y_0):
-
     x = x_0
     y = y_0
 
@@ -69,7 +59,7 @@ def mostrar_grafica(x_0, y_0):
 
         trayectoria = [0, 0, -c, m + 2 * x * c, -m * x - c * x**2 + y]
 
-        resta = np.subtract(trayectoria, funcion)
+        resta = np.subtract(trayectoria, coeficientes)
 
         r = np.roots(resta)
         r = r[np.isreal(r)].real  # Seleccionar solo las raices reales
@@ -127,35 +117,11 @@ def mostrar_grafica(x_0, y_0):
     # Dibujar los elementos iniciales de la grafica
     plt.plot(x_0, y_0, "ro")
     plt.plot(x_0, f(x_0), "ro")
-    poly_plot(funcion, X)
+    poly_plot(coeficientes, X)
     plt.axvline(x=x_0)
 
-    # Guardar la imagen de la gráfica
-    plt.savefig(f"botes en ({x_0},{y_0}).png")
-
-    # limpiar memoria
-    del (
-        trayectoria,
-        resta,
-        r,
-        x_i,
-        y_i,
-        x_0,
-        y_0,
-        x,
-        y,
-        v,
-        distancia_caida,
-        velocidad_ganada,
-        m,
-        c,
-        mayor,
-        menor,
-        raiz_final,
-    )
-
-    return numero_botes
+    plt.show()
 
 
-mostrar_grafica(1, 1)
-
+if __name__ == "__main__":
+    mostrar_grafica(1, 1)

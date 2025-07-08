@@ -1,11 +1,11 @@
+#include "bounce.h"
+#include "color.h"
+#include "utils.h"
+#include <BS_thread_pool.hpp>
+#include <SFML/Graphics.hpp>
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
-#include <BS_thread_pool.hpp>
-#include <SFML/Graphics.hpp>
-#include "bounce.h"
-#include "utils.h"
-#include "color.h"
 
 int main(int argc, char const* argv[])
 {
@@ -38,22 +38,18 @@ int main(int argc, char const* argv[])
         for (auto x = X.begin(); x != X.end(); ++x) {
             promesas.push_back(
                 pool.submit_task(
-                    [x, y]
-                    {
+                    [x, y] {
                         return calcular_botes(*x, *y, MAX_BOTES);
-                    }
-                )
-            );
+                    }));
         }
     }
 
     // Una vez calculado el vector, transformamos ese vector de promesas en una imagen
-    sf::Image image;
-    image.create(ANCHO, ALTO);
+    sf::Image image({ ANCHO, ALTO });
 
     int r, g, b;
-    int pos_x = 0;
-    int pos_y = 0;
+    unsigned int pos_x = 0;
+    unsigned int pos_y = 0;
     int num_botes = 0;
 
     ColorMap color_map = ColorMap(32);
@@ -61,10 +57,10 @@ int main(int argc, char const* argv[])
     for (auto i = promesas.begin(); i != promesas.end(); ++i) {
         num_botes = i->get();
         color_map.map(num_botes, &r, &g, &b);
-        image.setPixel(pos_x, pos_y, sf::Color(r, g, b));
+        image.setPixel({ pos_x, pos_y }, sf::Color(r, g, b));
 
         pos_x++;
-        if(pos_x >= ANCHO) {
+        if (pos_x >= ANCHO) {
             pos_x = 0;
             pos_y++;
         }
@@ -73,29 +69,31 @@ int main(int argc, char const* argv[])
     printf("Imagen generada\n");
 
     // Crear una textura de la imagen
-    sf::Texture texture;
-    texture.loadFromImage(image);
+    sf::Texture texture(image);
 
     // Crear un sprite de la textura
-    sf::Sprite sprite;
-    sprite.setTexture(texture);
+    sf::Sprite sprite(texture);
+    sprite.setScale({DOWNSCALE, DOWNSCALE});
 
-    // Rescalar el sprite al tamaño de la pantalla
-    sprite.setScale(DOWNSCALE, DOWNSCALE);
-    
     // Crear ventana del programa
-    sf::RenderWindow window(sf::VideoMode(ANCHO_PANTALLA, ALTO_PANTALLA), "fractal");
-    
+    sf::RenderWindow window(sf::VideoMode({ ANCHO_PANTALLA, ALTO_PANTALLA }), "fractal");
+
     // Bucle de renderizado
     while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
+        // Procesar eventos
+        while (const std::optional event = window.pollEvent()) {
+            // Cerrar ventana
+            if (event->is<sf::Event::Closed>())
                 window.close();
         }
-
+        
+        // Limpiar pantalla
         window.clear();
+
+        // Dibujar fractal
         window.draw(sprite);
+
+        // Actualizar ventana
         window.display();
     }
 

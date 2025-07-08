@@ -31,7 +31,6 @@ int main(int argc, char const* argv[])
     std::vector<double> X = linspace_double(MIN_X, MAX_X, ANCHO);
     std::vector<double> Y = linspace_double(MIN_Y, MAX_Y, ALTO);
 
-
     // Utilizando multiprocessing, calculamos todos los promesas en un vector
     BS::thread_pool_light pool;
     std::vector<std::future<int>> promesas;
@@ -49,13 +48,13 @@ int main(int argc, char const* argv[])
     int r, g, b;
     int pos_x = 0;
     int pos_y = 0;
-    int botes = 0;
+    int num_botes = 0;
 
     ColorMap color_map = ColorMap(32);
 
     for (auto i = promesas.begin(); i != promesas.end(); ++i) {
-        botes = i->get();
-        color_map.map(botes, &r, &g, &b);
+        num_botes = i->get();
+        color_map.map(num_botes, &r, &g, &b);
         image.setPixel(pos_x, pos_y, sf::Color(r, g, b));
 
         pos_x++;
@@ -67,34 +66,30 @@ int main(int argc, char const* argv[])
 
     printf("Imagen generada\n");
 
-    // Create a texture from the image
+    // Crear una textura de la imagen
     sf::Texture texture;
     texture.loadFromImage(image);
 
-    // Create a sprite from the texture
+    // Crear un sprite de la textura
     sf::Sprite sprite;
     sprite.setTexture(texture);
+
+    // Rescalar el sprite al tamaño de la pantalla
     sprite.setScale(DOWNSCALE, DOWNSCALE);
-
+    
+    // Crear ventana del programa
     sf::RenderWindow window(sf::VideoMode(ANCHO_PANTALLA, ALTO_PANTALLA), "fractal");
-
-    // Run the program as long as the window is open
+    
+    // Bucle de renderizado
     while (window.isOpen()) {
-        // Check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
         while (window.pollEvent(event)) {
-            // "close requested" event: we close the window
             if (event.type == sf::Event::Closed)
                 window.close();
         }
 
-        // Clear the window with a black color
         window.clear();
-
-        // Draw the sprite
         window.draw(sprite);
-
-        // Update the window
         window.display();
     }
 

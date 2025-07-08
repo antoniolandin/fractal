@@ -10,36 +10,27 @@
 
 int main(int argc, char const* argv[])
 {
-    double C_X, C_Y, ZOOM, MAX_X, MIN_X, MAX_Y, MIN_Y;
-    double const MAX_X_ORIGINAL = 5;
-    double const MIN_X_ORIGINAL = -5;
-    double const MAX_Y_ORIGINAL = 5;
-    double const MIN_Y_ORIGINAL = -5;
-    int ANCHO_PANTALLA, ALTO_PANTALLA;
-    std::string NOMBRE_ARCHIVO;
-
-    if (argc != 7) {
-        printf("Uso: %s <ANCHO_PANTALLA> <ALTO_PANTALLA> <C_X> <C_Y> <ZOOM> <NOMBRE_ARCHIVO>\n", argv[0]);
-        return -1;
-    } else {
-        ANCHO_PANTALLA = atoi(argv[1]);
-        ALTO_PANTALLA = atoi(argv[2]);
-        C_X = atof(argv[3]);
-        C_Y = atof(argv[4]);
-        ZOOM = atof(argv[5]);
-        NOMBRE_ARCHIVO = argv[6];
-    }
-
-    MAX_X = MAX_X_ORIGINAL / ZOOM + C_X;
-    MIN_X = MIN_X_ORIGINAL / ZOOM + C_X;
-    MAX_Y = MAX_Y_ORIGINAL / ZOOM + C_Y;
-    MIN_Y = MIN_Y_ORIGINAL / ZOOM + C_Y;
+    const std::string NOMBRE_ARCHIVO = "imagen.png";
+    const int ANCHO_PANTALLA = 320;
+    const int ALTO_PANTALLA = 180;
+    const double C_X = 0;
+    const double C_Y = 0;
+    const double ZOOM = 2;
+    const int MAX_X_ORIGINAL = 5;
+    const int MIN_X_ORIGINAL = -5;
+    const int MAX_Y_ORIGINAL = 5;
+    const int MIN_Y_ORIGINAL = -5;
+    const double MAX_X = MAX_X_ORIGINAL / ZOOM + C_X;
+    const double MIN_X = MIN_X_ORIGINAL / ZOOM + C_X;
+    const double MAX_Y = MAX_Y_ORIGINAL / ZOOM + C_Y;
+    const double MIN_Y = MIN_Y_ORIGINAL / ZOOM + C_Y;
 
     std::vector<double> X = linspace_double(MIN_X, MAX_X, ANCHO_PANTALLA);
     std::vector<double> Y = linspace_double(MIN_Y, MAX_Y, ALTO_PANTALLA);
 
     // Rellenamos los arrays de mapeo de colores que más tarde nos ayudaran a transformar un número en un color
     int STEP = 32;
+    int len = (int)pow(STEP, 3);
     int map_r[(int)pow(STEP, 3)];
     int map_g[(int)pow(STEP, 3)];
     int map_b[(int)pow(STEP, 3)];
@@ -81,7 +72,7 @@ int main(int argc, char const* argv[])
         int r, g, b;
 
         for (auto i = botes.begin(); i != botes.end(); ++i) {
-            map_to_color(i->get(), map_r, map_g, map_b, (int)pow(STEP, 3), &r, &g, &b);
+            map_to_color(i->get(), map_r, map_g, map_b, len, &r, &g, &b);
             imagen << (int)r << " " << (int)g << " " << (int)b << " ";
         }
 

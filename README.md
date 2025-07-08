@@ -24,8 +24,13 @@ https://github.com/Pastafarista/balls/assets/104270259/711ad99a-cd2f-483f-a510-4
 
 ## Dependencias
 
+CMake:
 ```bash
-sudo apt update
+sudo apt install cmake
+```
+
+Dependencias de SFML:
+```bash
 sudo apt install \
     libxrandr-dev \
     libxcursor-dev \

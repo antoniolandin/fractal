@@ -1,5 +1,3 @@
-#include <fstream>
-#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
@@ -7,10 +5,10 @@
 #include "../lib/BS_thread_pool_light.hpp"
 #include "../include/bounce.h"
 #include "../include/utils.h"
+#include <SFML/Graphics.hpp>
 
 int main(int argc, char const* argv[])
 {
-    const std::string NOMBRE_ARCHIVO = "imagen.png";
     const int ANCHO_PANTALLA = 320;
     const int ALTO_PANTALLA = 180;
     const double C_X = 0;
@@ -24,6 +22,7 @@ int main(int argc, char const* argv[])
     const double MIN_X = MIN_X_ORIGINAL / ZOOM + C_X;
     const double MAX_Y = MAX_Y_ORIGINAL / ZOOM + C_Y;
     const double MIN_Y = MIN_Y_ORIGINAL / ZOOM + C_Y;
+    const short unsigned int MAX_BOTES = 1000;
 
     std::vector<double> X = linspace_double(MIN_X, MAX_X, ANCHO_PANTALLA);
     std::vector<double> Y = linspace_double(MIN_Y, MAX_Y, ALTO_PANTALLA);
@@ -52,34 +51,63 @@ int main(int argc, char const* argv[])
     BS::thread_pool_light pool;
     std::vector<std::future<int>> botes;
 
-    for (auto y = Y.end() - 1; y != Y.begin(); --y) {
+    for (auto y = Y.end(); y != Y.begin(); --y) {
         for (auto x = X.begin(); x != X.end(); ++x) {
-            botes.push_back(pool.submit(calcular_botes, *x, *y));
+            botes.push_back(pool.submit(calcular_botes, *x, *y, MAX_BOTES));
         }
     }
 
     // Una vez calculado el vector, transformamos ese vector de botes en una imagen
-    std::ofstream imagen;
+    sf::Image image;
 
-    imagen.open(NOMBRE_ARCHIVO);
+    image.create(ANCHO_PANTALLA, ALTO_PANTALLA);
 
-    if (imagen.is_open()) {
-        // Header del bitmap
-        imagen << "P3" << std::endl;
-        imagen << ANCHO_PANTALLA << " " << ALTO_PANTALLA << std::endl;
-        imagen << "255" << std::endl;
+    int r, g, b;
+    int pos_x = 0;
+    int pos_y = 0;
 
-        int r, g, b;
+    for (auto i = botes.begin(); i != botes.end(); ++i) {
+        map_to_color(i->get(), map_r, map_g, map_b, len, &r, &g, &b);
+        image.setPixel(pos_x, pos_y, sf::Color(r, g, b));
 
-        for (auto i = botes.begin(); i != botes.end(); ++i) {
-            map_to_color(i->get(), map_r, map_g, map_b, len, &r, &g, &b);
-            imagen << (int)r << " " << (int)g << " " << (int)b << " ";
+        pos_x++;
+        if(pos_x >= ANCHO_PANTALLA) {
+            pos_x = 0;
+            pos_y++;
         }
-
-        imagen.close();
     }
 
     printf("Imagen generada\n");
+
+    // Create a texture from the image
+    sf::Texture texture;
+    texture.loadFromImage(image);
+
+    // Create a sprite from the texture
+    sf::Sprite sprite;
+    sprite.setTexture(texture);
+
+    sf::RenderWindow window(sf::VideoMode(ANCHO_PANTALLA, ALTO_PANTALLA), "fractal");
+
+    // Run the program as long as the window is open
+    while (window.isOpen()) {
+        // Check all the window's events that were triggered since the last iteration of the loop
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            // "close requested" event: we close the window
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        // Clear the window with a black color
+        window.clear();
+
+        // Draw the sprite
+        window.draw(sprite);
+
+        // Update the window
+        window.display();
+    }
 
     return 0;
 }

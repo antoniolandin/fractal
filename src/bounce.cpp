@@ -4,9 +4,7 @@
 #include "../include/bounce.h"
 #include "../include/utils.h"
 
-#define MAX_BOTES 1000
-
-int calcular_botes(double x_0, double y_0)
+int calcular_botes(double x_0, double y_0, const short unsigned int MAX_BOTES)
 {
     const float g = 9.8;
     const double tol = 1e-8;
